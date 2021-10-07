@@ -1,17 +1,19 @@
 <!--
  * @Author: your name
  * @Date: 2021-09-30 10:21:58
- * @LastEditTime: 2021-10-01 15:58:25
+ * @LastEditTime: 2021-10-07 09:32:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-springboot\src\views\Home.vue
 -->
 <template>
   <div class="home">
+
     <el-scrollbar style="height:721px">
-    <Header></Header>
+      <el-backtop></el-backtop>
+    <Header :num='this.goodsNum'></Header>
     <div class="content">
-      <router-view></router-view>
+      <router-view @goCart=cart></router-view>
     </div>
     <Footer></Footer>
     </el-scrollbar>
@@ -24,10 +26,24 @@ import Footer from '../components/Footer.vue'
 
 export default {
   name: 'Home',
+    props:{
+    num:''
+  },
   components: {
     Header,
     Footer,
-  }
+  },  
+  data() {
+    return {
+      goodsNum:'',
+    }
+  },
+  methods: {
+    cart(content){
+      this.goodsNum=content
+      console.log(content);
+    }
+  },
 }
 </script>
 
@@ -50,10 +66,10 @@ input{
   /* padding: 0 5px; */
 }
 .content{
-  /* height: 601px; */
+  /* width: 1236px;
+  margin: 0 auto; */
   padding: 0 150px;
   background-size: cover;
-  /* filter: blur(5px); */
   min-height: 621px;
   z-index: -999;
 }

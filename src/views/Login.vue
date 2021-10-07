@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-09-30 11:24:18
- * @LastEditTime: 2021-10-04 18:54:05
+ * @LastEditTime: 2021-10-06 20:12:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-springboot\src\views\Login.vue
@@ -24,6 +24,7 @@
 
 <script>
 export default {
+    inject:["reload"],
     data() {
       return {
           form:{
@@ -32,22 +33,27 @@ export default {
           }
       }
     },
+    watch:{
+
+    },
     methods: {
         commit(){
         console.log(JSON.stringify(this.form));
          this.$axios.post("/user/dologin",JSON.stringify(this.form))
          .then(res=>{
              console.log(res)
-             if(res.data=='success'){
+             if(res.data.message=='success'){
+                console.log(res.data.object.userName,res.data.object.userId);
+                sessionStorage.setItem('userId',res.data.object.userId)
+                sessionStorage.setItem('userName',res.data.object.userName)
+                
+                this.$router.push('/index')
+                this.reload()
                 this.$message({
                    type:'success',
                    message:'登陆成功' 
                 })
-                sessionStorage.setItem('userName',this.form.userName)
-                sessionStorage.setItem('userPwd',this.form.userPwd)
-                this.$router.push('/index')
-                location.reload()
-             }else if(res.data=='error'){
+             }else if(res.data.message=='error'){
                 this.$message({
                    type:'error',
                    message:'用户名或密码错误' 
@@ -59,6 +65,9 @@ export default {
          })
 
         }
+        
+    },
+    mounted() {
         
     },
 }

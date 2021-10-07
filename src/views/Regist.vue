@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-09-30 11:36:43
- * @LastEditTime: 2021-10-04 22:34:42
+ * @LastEditTime: 2021-10-06 19:58:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-springboot\src\views\Regist.vue
@@ -104,18 +104,22 @@ export default {
                     message:'用户名/密码/手机号不能为空'
                 })
             }
-            else if(obj.userName!=this.form.userPwd){
-                this.$message({
-                    type:'error',
-                    message:'两次密码不一致'
-                })
-            }
+            // else if(obj.userPwd!=this.form.checkpwd){
+            //     console.log(obj.userPwd,this.form.checkpwd);
+            //     this.$message({
+            //         type:'error',
+            //         message:'两次密码不一致'
+            //     })
+            // }
             else{
                  this.$axios.post("/user/register",JSON.stringify(obj))
                 .then(res=>{
                     console.log(res)
                     if(res.status==200){
-                        alert('注册成功')
+                        this.$message({
+                            type:'success',
+                            message:'注册成功'
+                        })
                         this.$router.push('/login')
                     }
                 })

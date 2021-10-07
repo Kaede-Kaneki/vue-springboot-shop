@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-09-30 10:21:58
- * @LastEditTime: 2021-10-04 22:44:41
+ * @LastEditTime: 2021-10-07 08:58:49
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-springboot\src\App.vue
@@ -38,5 +38,7 @@ export default {
 </script>
 
 <style>
-
+body{
+  padding-right: 0 !important;
+}
 </style>

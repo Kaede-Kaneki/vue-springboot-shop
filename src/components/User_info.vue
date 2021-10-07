@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-10-02 15:02:10
- * @LastEditTime: 2021-10-02 21:56:00
+ * @LastEditTime: 2021-10-06 21:01:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-springboot\src\components\User_info.vue
@@ -36,8 +36,8 @@
           </div>
           <div class="head_main">
               <span >账户安全:<i ref="sec">{{this.sec}}</i></span>
-              <span>绑定手机:<i >{{this.userTel}}</i></span>
-              <span>绑定邮箱:<i >{{this.userMail}}</i></span>
+              <span>绑定手机:<i ref="userTel">{{this.userTel}}</i></span>
+              <span>绑定邮箱:<i ref="userMail">{{this.userMail}}</i></span>
           </div>
       </div>
       <div class="user_order">
@@ -57,7 +57,7 @@ export default {
             s:'',
             dialogFormVisible: false,
             imageUrl: '',
-            sec:''
+            sec:'',
         }
     },
     methods: {
@@ -80,6 +80,8 @@ export default {
             return isJPG && isLt2M;
         },
         judgeSec(){
+            // console.log(this.$refs.userTel.object);
+            console.log(this.userTel,this.userMail);
             if(this.userTel=='未绑定'&&this.userMail=='未绑定'){
                 this.sec='极低'
                 this.$refs.sec.style.color='#f56c6c'
@@ -94,20 +96,22 @@ export default {
             }
         },
         judgeTel(){
-            if(this.userTel==''){
+            if(this.userTel===''||this.userTel==null){
+                console.log(this.userTel);
                 this.userTel='未绑定'
             }
-            else{
-                var arr=this.userTel
-                var str=''
-                for(let i=0;i<arr.length-4;i++){
-                    str+='*'
-                }
-                this.userTel=arr.slice(0,3)+str+arr.slice(arr.length-2)
-            }
+            // else{
+            //     var arr=this.userTel
+            //     var str=''
+            //     for(let i=0;i<arr.length-4;i++){
+            //         str+='*'
+            //     }
+            //     this.userTel=arr.slice(0,3)+str+arr.slice(arr.length-2)
+            // }
         },
         judgeMail(){
-            if(this.userMail==''){
+            if(this.userMail==''||this.userMail==null){
+                console.log(this.userMail);
                 this.userMail='未绑定'
             }
             else{
@@ -120,15 +124,34 @@ export default {
                 }
                 this.userMail=arr1.slice(0,2)+str1+arr1.slice(arr1.length-1)+'@'+arr2
             }
+        },
+        getuserInfo(){
+            var a=sessionStorage.getItem('userId')
+            this.$axios.post("/user/message",a)
+                .then(res=>{
+                    if(res.data.message=='success'){
+                        console.log(res.data);
+                        this.userName=res.data.object.userName
+                        this.userTel=res.data.object.userTel
+                        this.userMail=res.data.object.userMail
+                        this.judgeTel()
+                        this.judgeMail()
+                        this.judgeSec()
+                    }
+
+                })
+                .catch(err=>{
+                    console.log(err)
+                })
+
         }
     },
     mounted() {
         this.userName=sessionStorage.getItem('userName')
         this.s=getTime()
-        // this.judgeSec()
-        this.judgeTel()
-        this.judgeMail()
-        this.judgeSec()
+        
+        this.getuserInfo()
+
     },
 }
 </script>

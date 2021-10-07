@@ -1,14 +1,13 @@
 <!--
  * @Author: your name
  * @Date: 2021-09-30 11:33:49
- * @LastEditTime: 2021-10-04 17:19:05
+ * @LastEditTime: 2021-10-07 09:31:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-springboot\src\views\Index.vue
 -->
 <template>
   <div class="index">
-      
       <div class="index_head">
           <div class="logo" ref="logo" @mousedown="logo_down" @mouseup="logo_up"><a href="javascript:;" @click="goIndex()"><img src="../assets/超超.jpg" alt="logo"></a></div>
           <Search></Search>
@@ -53,7 +52,38 @@
           </div>
       </div>
       <div class="index_goods">
-          123456
+          <ul>
+              <li v-for="item in goodlist.slice(0,10)" :key="item.id" @click="goGoods">
+                  <div class="goods">
+                      <div class="goods_cover">
+                        <img :src="require(`../assets${item.cover}`) " alt="">
+                      </div>
+                     <div class="goods_title">
+                         <a href="javascript:;">{{item.name}}</a>
+                         <a href="javascript:;">{{item.price+'元'+'&nbsp;&nbsp;'}}<em class="pastPrice">{{'2999'+'元'}}</em></a>
+                     </div>
+                    
+                  </div>
+              </li>
+          </ul>
+      </div>
+      <div class="index_video">
+          <ul>
+              <li v-for="item in video" :key="item.id" @click="videoVisible=true">
+                  <div class="video_cover">
+                      <img :src="item.cover" alt="">
+                  </div>
+                  <div>
+                     123
+                  </div>         
+              </li>
+          </ul>
+          <el-dialog :visible.sync="videoVisible" title="123" >
+              <div class="video_adr">
+                 <video :src="video[0].url" controls ></video> 
+              </div>
+              
+          </el-dialog>
       </div>
   </div>
 </template>
@@ -67,11 +97,26 @@ import Search from '../components/Search.vue'
      },
      data() {
          return {
+             videoVisible:false,
              menu:['1','2','3','4','5','6','7','8'],
              num:'',
              banner:[{url:require('../assets/mi_civi.jpg')},{url:require('../assets/mix4.jpg')},{url:require('../assets/win.jpg')},{url:require('../assets/体温计.jpg')}],
              ads:[{url:require('../assets/mi11Ultra.jpg')},{url:require('../assets/mi11.jpg')},{url:require('../assets/小米降噪耳机Pro.png')},{url:require('../assets/mi11Ultra.jpg')}],
-            //  menu:['1','2','3','4','5','6','7','8'],
+             video:[
+                 {url:('https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/812358b69886e576c66a01f1f00affe9.mp4'),
+                  cover:require('../assets/video/e74c4ff741bcdfc5b28a48a43e4edc6d.webp')
+                 },
+                 {url:('https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/11c70c96529b6e6938567ec1aa0910e0.mp4'),
+                  cover:require('../assets/video/96563e75833ba4563bd469dd28203b09.webp')
+                 },
+                 {url:('https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/7cdabcaa763392c86b944eaf4e68d6a3.mp4'),
+                  cover:require('../assets/video/2fd26bb99b723337a2f8eaba84f7d5bb.webp')
+                 },
+                 {url:('https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/e25d81c4922fca5ebe51877717ef9b76.mp4'),
+                  cover:require('../assets/video/101b19aca4bb489bcef0f503e44ec866.webp')
+                 }
+                ],
+             goodlist:[]
          }
      },
      methods: {
@@ -82,7 +127,7 @@ import Search from '../components/Search.vue'
          mouseenter(a){
              this.$refs.banner_goods.style.display='block'
              this.num=a
-            this.$refs.banner_menu[this.num].style.backgroundColor='red'
+             this.$refs.banner_menu[this.num].style.backgroundColor='red'
          },
          mouseleave(a){
              this.$refs.banner_goods.style.display='none'
@@ -113,11 +158,23 @@ import Search from '../components/Search.vue'
              this.$router.push('/goods')
          }
      },
-
+     mounted() {
+         this.$axios.get('/good/allList')
+            .then(res=>{
+                console.log(res);
+                this.goodlist=res.data.object
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+     },
 }
 </script>
 
 <style scoped>
+em{
+    font-style: normal;
+}
 /* head */
 .index_head{
     float: left;
@@ -275,10 +332,111 @@ import Search from '../components/Search.vue'
   .index_ads li:hover{
       box-shadow: 0  15px 30px rgb(0 0 0 / 10%);
   }
-  .index_goods{
+
+  /* 商品 */
+ .index_goods{
       float: left;
       width: 100%;
-      height: 150px;
-      background-color: pink;
+      height: auto;
+      background-color: #f5f5f5;
   }
+ .index_goods ul{
+    padding: 30px 0px 40px 0;
+    position: relative;
+      
+  }
+ .index_goods ul li{
+    /* position: absolute; */
+    /* top: 0; */
+    float: left;
+    width: 234px;
+    height: 300px;
+    cursor: pointer;
+    margin: 15px 16.5px 0px 0; 
+    background-color: rgb(255, 255, 255);
+    transition: transform ease 0.3s,box-shadow ease 0.3s;
+ }
+.index_goods ul li:nth-child(5n){
+    margin: 15px 0px 0px 0; 
+}
+.index_goods ul li:hover{
+    transform: translateY(-5px);
+    box-shadow: 0px 0px 20px 10px #33333336;
+}
+.index_goods .goods{
+    position: relative;
+    top: 0;
+    left: 0;
+    margin-left: 37px;
+    margin-top: 30px;
+}
+.index_goods .goods_cover{
+    width: 160px;
+    height: 160px;
+}
+.index_goods .goods_cover img{
+    width: 100%;
+    height: 100%;
+}
+.index_goods .goods_title{
+    margin-top: 20px;
+    width: 160px;
+    height: 100%;
+}
+.index_goods .goods_title a{
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    /* float: left; */
+}
+.index_goods .goods_title .pastPrice{
+    text-decoration: line-through;
+}
+/* 视频 */
+.index_video{
+    float: left;
+    width: 100%;
+    height: 100%;
+    margin: 20px 0;
+    
+    background-color: #f5f5f5;
+}
+.index_video ul{
+    padding: 40px 0;
+}
+.index_video li{
+    float: left;
+    height: 285px;
+    margin-right: 17px;
+    background-color: #fff;
+    transition: box-shadow ease 0.3s,transform ease 0.3s;
+    cursor: pointer;
+}
+.index_video li:last-child{
+    margin-left: 1px;
+    margin-right: 0;
+}
+.index_video li:hover{
+    transform: translateY(-5px);
+    box-shadow: 0px 0px 20px 10px #33333336;
+}
+.video_cover{
+    width: 296px;
+    height: 180px;
+    
+}
+.video_cover img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.video_adr{
+    width: 100%;
+    height: 100%;
+    
+}
+.video_adr video{
+    width: 100%;
+    height: 100%;
+}
 </style>

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-09-29 17:48:08
- * @LastEditTime: 2021-10-04 22:45:41
+ * @LastEditTime: 2021-10-05 20:20:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-springboot-test\src\components\Header.vue
@@ -15,7 +15,7 @@
       </ul> -->
        <!-- 购物车 -->
       <div class="cart" @mouseenter="mouseenter" @mouseleave="mouseleave">
-        <div class="cart_num"><a href="javascript:;" @click="goCart()"><i class="el-icon-shopping-cart-2"></i>{{'购物车('+12+')'}}</a></div>
+        <div class="cart_num"><a href="javascript:;" @click="goCart()"><i class="el-icon-shopping-cart-2"></i>{{'购物车('}}{{num||0}}{{')'}}</a></div>
         <div class="cart_goodsList" ref="cart_goodsList">
           <i class="triangle"></i>
           123
@@ -30,11 +30,7 @@
         <span>/</span>
         <div class="log"><a href="javascript:;" @click="goLogin()">登录</a></div>
       </div>
-      <!-- 退出登录 -->
-      <!-- <div class="logout user" ref="logout">
-       <a href="javascript:;" @click="logout()">退出登录</a>
-      </div> -->
-      <!-- 用户 -->
+
       <div class="user" ref="user">
         <el-dropdown @command="handleCommand" placement="bottom">
             <span class="el-dropdown-link">{{userName}}</span>
@@ -53,10 +49,11 @@
 <script>
 
 export default {
+  inject:["reload"],
+  props:["num"],
   data() {
     return {
       title:['首页','1','2','3','4','5'],
-      num:null,
       userName:'',
     }
   },
@@ -99,7 +96,11 @@ export default {
     logout(){
       sessionStorage.clear()
       this.$router.push('/index')
-      location.reload()
+      this.reload()
+      this.$message({
+        type:'message',
+        message:'账号已退出'
+      })
     },
     ifLogin(){
       if(sessionStorage.getItem('userName')==null){
